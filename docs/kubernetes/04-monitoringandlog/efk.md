@@ -104,6 +104,31 @@ volumeClaimTemplate:
 :::
 > values.yaml 파일을 현재 시스템 상황에 맞게 적절히 수정합니다.
 
+::: details Elasticsearch 단일 노드 구성 시
+::: code-group
+``` yaml [values.yaml] {12}
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+replicas: 1
+minimumMasterNodes: 1
+
+clusterHealthCheckParams: "wait_for_status=yellow&timeout=5s"
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: efk-storage
+  resources:
+    requests:
+      storage: 30Gi
+```
+:::
+
 ``` bash
 helm install elasticsearch -f values.yaml elastic/elasticsearch -n efk --version 8.5.1
 ```
