@@ -57,7 +57,8 @@ service:
 ``` bash
 helm install traefik-8443 traefik/traefik \
   -n traefik-8443 \
-  -f traefik-8443-values.yaml
+  -f traefik-8443-values.yaml \
+  --skip-crds
 ```
 
 ### 확인
