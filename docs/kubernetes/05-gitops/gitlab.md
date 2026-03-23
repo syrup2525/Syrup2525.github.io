@@ -667,3 +667,31 @@ spec:
 ``` bash
 kubectl apply -f ingress.yaml
 ```
+
+## 기타
+### registry 정리 방법
+``` bash
+NS=gitlab
+REL=gitlab
+
+# 1. values 백업
+helm get values -n "$NS" "$REL" -a > "${REL}-values.yaml"
+
+# 2. read-only 전환
+helm upgrade -n "$NS" "$REL" gitlab/gitlab \
+  -f "${REL}-values.yaml" \
+  --set registry.maintenance.readonly.enabled=true \
+  --wait
+
+# 3. registry pod 찾기
+POD=$(kubectl get pods -n "$NS" -l app=registry -o jsonpath='{.items[0].metadata.name}')
+echo "$POD"
+
+# 4. 우선 안전하게 GC 실행(-m 없이)
+kubectl exec -n "$NS" "$POD" -- /bin/registry garbage-collect /etc/docker/registry/config.yml
+
+# 5. read-only 해제
+helm upgrade -n "$NS" "$REL" gitlab/gitlab \
+  -f "${REL}-values.yaml" \
+  --wait
+```
