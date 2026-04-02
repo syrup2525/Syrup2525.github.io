@@ -17,6 +17,7 @@ export default defineConfig({
           { text: 'Database', link: '/kubernetes/06-database/mysql' },
           { text: 'Apache Kafka', link: '/kubernetes/07-kafka/install' },
           { text: 'Nexus Repository', link: '/kubernetes/08-nexus/install' },
+          { text: 'Istio', link: '/kubernetes/09-istio/egress.md' },
         ]
       },
       {
@@ -188,6 +189,12 @@ export default defineConfig({
           items: [
             { text: 'Install', link: '/kubernetes/08-nexus/install' },
             { text: 'Setting', link: '/kubernetes/08-nexus/setting' },
+          ],
+        },
+        {
+          text: 'Istio',
+          items: [
+            { text: 'Egress', link: '/kubernetes/09-istio/egress.md' },
           ],
         },
       ],
