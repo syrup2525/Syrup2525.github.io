@@ -19,6 +19,92 @@ helm repo update
 helm install prometheus prometheus-community/kube-prometheus-stack -n prometheus
 ```
 
+::: details `node-exporter` Pod 를 제외한 작업을 특정 노드에서 실행하기
+`label` 및 `taint` 설정
+``` bash
+kubectl label node metric1 metric=true
+kubectl taint node metric1 edicated=metric:NoSchedule
+```
+
+`values.yaml` 작성
+::: code-group
+``` yaml [values.yaml]
+upgradeJob:
+  nodeSelector:
+    metric: "true"
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: metric
+      effect: NoSchedule
+
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      metric: "true"
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: metric
+        effect: NoSchedule
+
+grafana:
+  nodeSelector:
+    metric: "true"
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: metric
+      effect: NoSchedule
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      metric: "true"
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: metric
+        effect: NoSchedule
+
+kube-state-metrics:
+  nodeSelector:
+    metric: "true"
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: metric
+      effect: NoSchedule
+
+prometheusOperator:
+  nodeSelector:
+    metric: "true"
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: metric
+      effect: NoSchedule
+
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        metric: "true"
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: metric
+          effect: NoSchedule
+
+# node-exporter만 전 노드 수집용으로 유지
+prometheus-node-exporter:
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+```
+:::
+
 ::: tip
 #### k3s 환경에서 설치시 (안정버전)
 ``` bash
