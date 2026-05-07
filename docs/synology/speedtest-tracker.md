@@ -132,3 +132,7 @@ sudo docker exec -it speedtest-tracker sh -lc '
 ``` bash
 sudo docker restart speedtest-tracker
 ```
+
+::: tip
+초기 아이디는 `admin@example.com`, 초기 비밀번호는 `password` 입니다.
+:::
