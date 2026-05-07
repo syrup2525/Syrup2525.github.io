@@ -76,6 +76,12 @@ export default defineConfig({
         ],
       },
       {
+        text: "Synology",
+        items: [
+          { text: "Speedtest Tracker", link: "/synology/speedtest-tracker" },
+        ]
+      },
+      {
         text: "Etc",
         items: [
           {
@@ -310,6 +316,14 @@ export default defineConfig({
             { text: "Portainer", link: "/dockerswarm/portainer" },
             { text: "Monitoring", link: "/dockerswarm/monitoring" },
             { text: "Registry", link: "/dockerswarm/registry" },
+          ]
+        }
+      ],
+      "/synology/": [
+        {
+          text: "Synology",
+          items: [
+            { text: "Speedtest Tracker", link: "/synology/speedtest-tracker" },
           ]
         }
       ],
