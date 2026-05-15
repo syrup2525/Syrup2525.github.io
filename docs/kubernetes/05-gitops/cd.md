@@ -363,6 +363,7 @@ helm install argocd-image-updater argo/argocd-image-updater -n argocd
 ::: details 버전을 지정하여 설치
 helm upgrade --install argocd-image-updater argo/argocd-image-updater \
   -n argocd \
+  --version 0.11.4 \
   --set image.repository=quay.io/argoprojlabs/argocd-image-updater \
   --set image.tag=v0.15.2
 :::
