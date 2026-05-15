@@ -100,6 +100,39 @@ Installed:
 Complete!
 ```
 
+::: details air-gap artifact 설치 방법
+#### 필요한 경우 패키지 설치
+``` bash
+dnf install -y tar gzip zstd
+```
+
+#### 작업 공간 준비
+``` bash
+mkdir -p /root/rke2-artifacts
+cd /root/rke2-artifacts
+```
+
+#### 필요 파일 다운로드
+``` bash
+curl -OLs "https://github.com/rancher/rke2/releases/download/v1.32.7%2Brke2r1/rke2-images.linux-amd64.tar.zst"
+curl -OLs "https://github.com/rancher/rke2/releases/download/v1.32.7%2Brke2r1/rke2.linux-amd64.tar.gz"
+curl -OLs "https://github.com/rancher/rke2/releases/download/v1.32.7%2Brke2r1/sha256sum-amd64.txt"
+curl -sfL https://get.rke2.io -o install.sh
+```
+
+#### 파일 유효성 검증
+``` bash
+grep -E 'rke2-images.linux-amd64.tar.zst|rke2.linux-amd64.tar.gz' sha256sum-amd64.txt | sha256sum -c -
+```
+
+#### 설치 진행
+``` bash
+INSTALL_RKE2_ARTIFACT_PATH=/root/rke2-artifacts \
+INSTALL_RKE2_TYPE="server" \
+sh install.sh
+```
+:::
+
 ### 서비스 시작 및 등록
 ::: tip
 ::: details config.yaml 설정 (선택사항)
