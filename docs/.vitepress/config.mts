@@ -18,6 +18,7 @@ export default defineConfig({
           { text: 'Apache Kafka', link: '/kubernetes/07-kafka/install' },
           { text: 'Nexus Repository', link: '/kubernetes/08-nexus/install' },
           { text: 'Istio', link: '/kubernetes/09-istio/egress.md' },
+          { text: 'Etc', link: '/kubernetes/10-etc/reverse-proxy.md' },
         ]
       },
       {
@@ -201,6 +202,12 @@ export default defineConfig({
           text: 'Istio',
           items: [
             { text: 'Egress', link: '/kubernetes/09-istio/egress.md' },
+          ],
+        },
+        {
+          text: 'Etc',
+          items: [
+            { text: 'Reverse Proxy', link: '/kubernetes/10-etc/reverse-proxy.md' },
           ],
         },
       ],
