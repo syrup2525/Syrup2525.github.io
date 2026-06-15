@@ -38,7 +38,7 @@ Boot → Fast Boot → Disabled
 
 ## Windows 사전 작업
 ### 빠른 부팅 비활성화
-``` txt
+``` bash
 powercfg.exe /hibernate off
 ```
 
@@ -93,7 +93,8 @@ manage-bde -off C:
 
 ## USB 로 부팅
 기기가 꺼진 상태에서
-1. 기기를 완전히 종료 후에 기기 부팅과 동시에 키보드 `F7` 반복 입력
+1. Bazzite 이미지로 구운 부팅 USb를 본체에 삽입
+2. 기기를 완전히 종료 후에 기기 부팅과 동시에 키보드 `F7` 반복 입력
 2. 부팅 디스크 선택에서 USB 부팅을 선택
 
 ## Bazzite 설치
@@ -121,7 +122,7 @@ manage-bde -off C:
 
 ## BIOS 부팅 순서 변경
 1. 기기를 완전히 종료
-2. 기기 부팅과 동시에 키보드 `F7` 반복 입력
+2. 기기 부팅과 동시에 키보드 `ESC` 반복 입력
 3. Boot 탭으로 이동
 4. Boot Option Priorities 순서를 다음과 같이 변경
   - `Boot Option #1` Fedora
@@ -168,7 +169,7 @@ sudo mkdir -p /var/mnt/games
 lsblk -f
 ```
 
-`Games` 파티션 UUID를 확인한 뒤:
+`Games` 파티션 UUID를 확인한 뒤
 ``` bash
 sudo nano /etc/fstab
 ```
@@ -228,53 +229,56 @@ curl -L https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/dow
   - 해당 위치로 이동하여 OneXPlayer_Apex_Tools.zip 선택
 5. 플러그인 목록에서 `OneXPlayer_Apex_Tools` 선택후 옵션들을 활성화
 
-### 부팅시 부팅 OS 선택 적용
+### 윈도우 부팅 메뉴 스팀에 추가
 ``` bash
-ujust regenerate-grub
+ujust setup-boot-windows-steam
 ```
 
 ## Windows 설정
 ### Games 파티션 마운트
-
-Windows에서 BTRFS 파티션을 읽고 쓰기 위해 WinBtrfs를 설치
-
 #### 1. Bazzite에서 UUID와 UID/GID 확인
 
 Bazzite 에서 각 BTRFS 파티션의 UUID를 확인
 
-```bash
+``` bash
 lsblk -f
 ```
 
-아래 값을 미리 메모
+``` txt
+...
+nvme0n1p8 btrfs        a823881e-cd32-4810-bce9-a8c6f0d2bb59 104.5G
+nvme0n1p9 btrfs        77bb176c-b4b5-48ec-86c9-0741d2ef79e1 1.5T
+...
+```
 
-```txt
-Bazzite system UUID = xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-Games UUID          = yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+아래 값을 미리 메모 (아래 값은 예시임으로 실제 값 메모)
+
+``` txt
+Bazzite system UUID = a823881e-cd32-4810-bce9-a8c6f0d2bb59
+Games UUID          = 77bb176c-b4b5-48ec-86c9-0741d2ef79e1
 ```
 
 현재 Bazzite 사용자 UID/GID 확인
 
-```bash
+``` bash
 id
 ```
 
 예시
 
-```txt
-uid=1000(deck) gid=1000(deck)
+``` txt
+uid=1000(bazzite) gid=1000(bazzite)
 ```
 
 아래 값도 메모
 
-```txt
+``` txt
 Linux UID = 1000
 Linux GID = 1000
 ```
 
 #### 2. WinBtrfs 설치
-
-Windows로 부팅한 뒤 WinBtrfs 최신 릴리스를 다운로드
+Windows로 부팅한 뒤 WinBtrfs [최신 릴리스](https://github.com/maharmstone/btrfs/releases)를 다운로드
 
 1. WinBtrfs 릴리스 ZIP 다운로드
 2. ZIP 압축 해제
@@ -284,160 +288,57 @@ Windows로 부팅한 뒤 WinBtrfs 최신 릴리스를 다운로드
 
 #### 3. Windows 사용자 SID 확인
 
+::: tip
+이 시점에서 `D:` 에 `Bazzite system` `E:` 에 `Games` 가 마운트 된것이 확인됨
+:::
+
 일반 명령 프롬프트 또는 PowerShell에서 현재 Windows 사용자 SID를 확인
 
 ```bat
-wmic useraccount get name,sid
+whoami /user
 ```
 
 예시
 
-```txt
+``` txt
 Name        SID
 myuser      S-1-5-21-1234567890-123456789-1234567890-1001
 ```
 
 현재 사용하는 Windows 계정의 SID를 메모
 
-```txt
+``` txt
 Windows SID = S-1-5-21-1234567890-123456789-1234567890-1001
 ```
 
-#### 4. Bazzite system 파티션 숨김 처리
-
-`regedit`를 관리자 권한으로 실행
-
-아래 경로로 이동
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs
+#### 4. 값 확인
+아래 값들이 필요
+``` txt
+Bazzite system UUID = a823881e-cd32-4810-bce9-a8c6f0d2bb59
+Games UUID          = 77bb176c-b4b5-48ec-86c9-0741d2ef79e1
+Linux UID           = 1000
+Linux GID           = 1000
+Windows SID         = S-1-5-21-1234567890-123456789-1234567890-1001
 ```
 
-각 BTRFS 파일시스템 UUID 이름의 하위 키가 생성되어 있는지 확인
-
-예시
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+#### 5. Bazzite system 파티션 숨김 처리
+Bazzite system UUID `a823881e-cd32-4810-bce9-a8c6f0d2bb59` 에 실제 값 입력 
+``` bash
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\btrfs\a823881e-cd32-4810-bce9-a8c6f0d2bb59" /v Ignore /t REG_DWORD /d 1 /f
 ```
 
-UUID 키가 없으면 Bazzite에서 확인한 UUID 이름으로 직접 키를 생성
-
-`Bazzite system UUID`에 해당하는 키를 선택하고 아래 DWORD 값을 생성
-
-```txt
-값 이름: Ignore
-값 종류: DWORD(32비트)
-값 데이터: 1
-기준: 10진수
+#### 6. SID → UID 매핑 설정
+Linux UID `1000` 에 실제 값 입력 
+``` bash
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\btrfs\Mappings" /v "S-1-5-21-1234567890-123456789-1234567890-1001" /t REG_DWORD /d 1000 /f
 ```
 
-예시
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-└─ Ignore = 1
+#### 7. SID → GID 매핑 설정
+Linux GID `1000` 에 실제 값 입력 
+``` bash
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\btrfs\GroupMappings" /v "S-1-5-21-1234567890-123456789-1234567890-1001" /t REG_DWORD /d 1000 /f
 ```
 
-#### 5. SID → UID 매핑 설정
-
-`regedit`에서 아래 경로로 이동
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\Mappings
-```
-
-`Mappings` 키가 없으면 직접 생성
-
-그 다음 아래 값을 생성
-
-```txt
-값 이름: Windows 사용자 SID
-값 종류: DWORD(32비트)
-값 데이터: Linux UID
-기준: 10진수
-```
-
-예시
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\Mappings
-└─ S-1-5-21-1234567890-123456789-1234567890-1001 = 1000
-```
-
-#### 6. SID → GID 매핑 설정
-
-`regedit`에서 아래 경로로 이동
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\GroupMappings
-```
-
-`GroupMappings` 키가 없으면 직접 생성
-
-그 다음 아래 값을 생성
-
-```txt
-값 이름: Windows 사용자 SID
-값 종류: DWORD(32비트)
-값 데이터: Linux GID
-기준: 10진수
-```
-
-예시
-
-```txt
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\btrfs\GroupMappings
-└─ S-1-5-21-1234567890-123456789-1234567890-1001 = 1000
-```
-
-#### 7. Windows 재부팅
+#### 8. Windows 재부팅
 
 레지스트리 설정을 적용하기 위해 Windows를 재부팅
-
-#### 8. Games 파티션 드라이브 문자 할당
-
-Windows 탐색기 또는 디스크 관리에서 `Games` 파티션에 드라이브 문자를 할당
-
-예시
-
-```txt
-G:
-```
-
-#### 9. Games 파티션 쓰기 테스트
-
-Windows에서 `Games` 드라이브에 테스트 파일을 생성
-
-예시
-
-```txt
-G:\Shared\windows-write-test.txt
-```
-
-그 다음 Bazzite로 부팅해서 파일이 보이는지 확인
-
-```bash
-ls -l /var/mnt/games/Shared/
-```
-
-파일 소유자가 현재 Bazzite 사용자로 보이면 정상
-
-```txt
--rw-r--r--. 1 deck deck ... windows-write-test.txt
-```
-
-#### 10. Steam 라이브러리 분리
-
-Windows Steam에서는 아래 폴더만 라이브러리로 추가
-
-```txt
-G:\SteamLibrary-Windows
-```
-
-Bazzite Steam에서는 아래 폴더만 라이브러리로 추가
-
-```txt
-/var/mnt/games/SteamLibrary-Bazzite
-```
