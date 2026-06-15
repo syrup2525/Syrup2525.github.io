@@ -83,6 +83,12 @@ export default defineConfig({
         ]
       },
       {
+        text: "Bazzite",
+        items: [
+          { text: "OneXPlayer Apex", link: "/bazzite/apex" },
+        ]
+      },
+      {
         text: "Etc",
         items: [
           {
@@ -333,6 +339,14 @@ export default defineConfig({
             { text: "Speedtest Tracker", link: "/synology/speedtest-tracker" },
           ]
         }
+      ],
+      "/bazzite/": [
+        {
+          text: "Bazzite",
+          items: [
+            { text: "OneXPlayer Apex", link: "/bazzite/apex" },
+          ]
+        },
       ],
       "/etc/": [
         {
