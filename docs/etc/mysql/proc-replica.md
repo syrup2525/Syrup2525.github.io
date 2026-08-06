@@ -35,7 +35,7 @@ docker run --rm \
   -e TARGET_MYSQL_PASSWORD=MYSQL_PASSWORD \
   -e TARGET_MYSQL_DATABASE=MYSQL_DATABASE \
   -e FILTER_KEYWORD=v0_13_2 \
-  syrup2525/proc-clone:latest
+  syrup2525/proc-replica:latest
 ```
 > - `SOURCE_MYSQL_HOST` 원본 프로시저가 존재하는 MySQL HOST 를 입력합니다 예를들어 `source.mysql.com`
 > - `SOURCE_MYSQL_PORT` 원본 프로시저가 존재하는 MySQL PORT 를 입력합니다 예를들어 `3306`
@@ -97,12 +97,12 @@ docker compose up
 
 #### 1. git clone
 ``` bash
-git clone https://github.com/Syrup2525/mysql-proc-clone.git 
+git clone https://github.com/Syrup2525/mysql-proc-replica.git 
 ```
 
 #### 2. Container build
 ``` bash
-docker build -t proc-cloner . 
+docker build -t proc-replica . 
 ```
 
 #### 3. Create .env 
@@ -128,5 +128,5 @@ FILTER_KEYWORD=v0_13_2
 
 #### 4. Run Container
 ``` bash
-docker run --rm --env-file .env -v "$(pwd)/output:/tmp" proc-cloner
+docker run --rm --env-file .env -v "$(pwd)/output:/tmp" proc-replica
 ```
