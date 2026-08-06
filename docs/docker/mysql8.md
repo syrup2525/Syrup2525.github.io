@@ -8,6 +8,23 @@
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 ```
 
+::: details 실제 디렉터리에 볼륨 연결
+```bash
+sudo mkdir -p /data/mysql
+```
+
+```bash
+docker run \
+  --name mysql \
+  -e 'MYSQL_ROOT_PASSWORD=!test1234' \
+  -d \
+  -p 3306:3306 \
+  -v /data/mysql:/var/lib/mysql \
+  --restart unless-stopped \
+  mysql:8.0.38
+```
+:::
+
 ::: tip
 * [공식 저장소 바로가기](https://hub.docker.com/_/mysql)
 * [tag 목록 바로가기](https://hub.docker.com/_/mysql/tags)
