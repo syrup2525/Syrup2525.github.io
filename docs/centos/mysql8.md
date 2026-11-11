@@ -97,3 +97,7 @@
     ```
     GRANT ALL PRIVILEGES ON 유저이름.* TO '유저이름'@'%';
     ```
+
+   ``` sql
+   FLUSH PRIVILEGES;
+   ```

@@ -130,3 +130,24 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '원하는!강력한!비밀번호!';
 SELECT user, host, authentication_string FROM mysql.user;
 EXIT;
 ```
+
+## 동명의 데이터베이스를 만들고 권한 부여하기 (옵션)
+
+* 유저 생성
+    ```
+    CREATE USER '유저이름'@'%' IDENTIFIED BY '유저패스워드';
+    ```
+
+* DB 생성
+    ```
+    CREATE DATABASE IF NOT EXISTS 유저이름;
+    ```
+
+* 권한 부여
+    ```
+    GRANT ALL PRIVILEGES ON 유저이름.* TO '유저이름'@'%';
+    ```
+
+   ``` sql
+   FLUSH PRIVILEGES;
+   ```
